@@ -361,49 +361,6 @@ else if ($op == 'food_element')
 }
 -->
 </style>
-	<?php
-	/**
-		echo "<table border = '0' cellpadding = '4' cellspacing = '1' width = '95%' valign = 'top'>\n";
-  	 	echo "<form action = '" . ROOT_URL . "/adminlte/index.php?op=food_element' id = 'searchform' name = 'searchform' method = 'post'>\n";
-	    echo "<tr>\n";
-   		echo "  <td><div style = 'width:110px'><div class = 'title'>維護食材資料</div></div></td>\n";
-	  	echo "  <td align = 'center'>\n";
-		echo "<select id = 'type' name = 'type' >\n";
-		echo "<option value='name'>名稱</option>\n";
-		echo "  </select>\n";
-		echo "<span id=searchlist></span>";
-	    echo "  <input type = 'text' id = 'keyword' name = 'keyword' style = 'width:100px'>\n";
-   		echo "  <input type = 'hidden' id = 'action' name = 'action' value = 'search'>\n";
-	    echo "  <input type = 'submit' id = 'search' name = 'search' value = '查詢食材'>\n";        
-	    echo "  <input type = 'button' id = 'add' name = 'add' value = '新增食材' onclick = 'location.href=\"index.php?op=".$op."&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"'></td>\n";
- 	    echo "</tr>\n";
-    	echo "</form>\n";
-	    echo "</table>\n";
-	**/
-	?>
-    
-    <?php 
-	/*
-		echo "<table border = '0' cellpadding = '4' cellspacing = '1' width = '95%' valign = 'top'>\n";
-    	echo "<form action = '" . ROOT_URL . "/adminlte/index.php?op=food_element' id = 'searchform' name = 'searchform' method = 'post'>\n";
-	    echo "<tr>\n";
-	    echo "  <td align = 'center'>\n";
-	    echo "  <select id = 'type' name = 'type'>\n";
-    	echo "     <option value = 'name'>名稱</option>\n";
-	    echo "  </select>\n";
-	    echo "  <input type = 'text' id = 'keyword' name = 'keyword' style = 'width:100px'>\n";
-	    echo "  <input type = 'hidden' id = 'action' name = 'action' value = 'search'>\n";
-	    echo "  <input type = 'submit' id = 'search' name = 'search' value = '查詢食材'>\n";
-		if($USER['power'] == '1' ||$USER['power'] == '3')
-		{
-			echo "  <input type = 'button' id = 'adduser' name = 'adduser' value = '新增食材' onclick = 'location.href=\"index.php?op=food_element&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"'></td>\n";
-		}
-	    
-    	echo "</tr>\n";
-	    echo "</form>\n";
-	    echo "</table>\n";
-	*/
-	 ?>
       <!-- Content Wrapper. Contains page content -->
         <!-- Main content -->
         <section class="content">
@@ -425,6 +382,7 @@ else if ($op == 'food_element')
 				
                 </div><!-- /.box-header -->
                 <div class="box-body">
+				<div class="table-responsive">
                   <table id="food-elements" class="table table-bordered table-striped">
                     <thead>
                       <tr>
@@ -530,6 +488,7 @@ else if ($op == 'food_element')
                       </tr>
                     </tfoot>
                   </table>
+				  </div>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
             </div><!-- /.col -->

@@ -44,12 +44,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			$pageName['actionview'] = '檢視行為紀錄';
 			$pageName['dashboard'] = '儀錶板';
 			$backName = ($USER['username'] == 'nurse')? '醫事人員' : '後台管理';
-			$nowL = array($backName => 'ngadmin/newgen.php', $pageName[$op] => 'ngadmin/newgen.php?op='.$op);
+			$nowL = array($backName => 'adminlte/index.php', $pageName[$op] => 'adminlte/index.php?op='.$op);
 		?>
         <section class="content-header">
           <h1>
-            <?php echo $pageName[$op]; ?>
-            <small>::</small>
+			<?php echo $pageName[$op]; ?>
+			<small>::</small>
           </h1>
 		  
           <ol class="breadcrumb">

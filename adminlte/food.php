@@ -1,14 +1,17 @@
 <?PHP
+/*
+維護/檢視食物資料
+修改日期20150506
 
-//========================================================修改食物===========================================================
+*/
 if ($_POST['action'] == 'edit' && $_POST['ch_id'] != '')
 {
 	$error    = false;
 	$pic      = $_FILES["upimg"];
 	
-	$pic_type = $OnlyFileType;                    //只允許上傳圖檔
+	$pic_type = $OnlyFileType;//只允許上傳圖檔
 	$temp_arr = explode(".",$pic['name']); 
-	$name_2   = strtolower(end($temp_arr));	      //副檔名
+	$name_2   = strtolower(end($temp_arr));//副檔名
 	$new_name = time() . '.' . $name_2;
 	if ( trim($pic['name']) != '' )
 	{
@@ -32,7 +35,6 @@ if ($_POST['action'] == 'edit' && $_POST['ch_id'] != '')
 	}else{
 		$ch_image = base64_decode($_POST['oldimg']);
 	}
-
 	if ( $error == false)
 	{
 		//判斷是否要存入食物類別2
@@ -82,7 +84,6 @@ if ($_POST['action'] == 'edit' && $_POST['ch_id'] != '')
 		showMsg('修改失敗，請洽系統管理員!!');
 	}
 }
-
 //========================================================新增食物===========================================================
 if ( $_POST['action'] == 'add' )
 {
@@ -154,10 +155,10 @@ if ($op == 'food' && $_GET['action'] == 'delete' && $_GET['id'] != '')
 	{
 		showMsg('刪除成功!!');
 		actionlog(12,$USER['username']);
-		reDirect(ROOT_URL . '/admin/admin.php?op=' . $_GET['op'] . '&page=' . $_GET['page']);
+		reDirect(ROOT_URL . '/adminlte/index.php?op=' . $_GET['op'] . '&page=' . $_GET['page']);
 	}else{
 		showMsg('刪除失敗，請洽系統管理員!!');
-		reDirect(ROOT_URL . '/admin/admin.php?op=' . $_GET['op'] . '&page=' . $_GET['page']);
+		reDirect(ROOT_URL . '/adminlte/index.php?op=' . $_GET['op'] . '&page=' . $_GET['page']);
 	}
 }
 
@@ -193,14 +194,14 @@ if ( $op == 'food' && ( $_GET['action'] == 'edit' || $_GET['action'] == 'add' ) 
 		echo "<div class = 'title' style = 'width:150px'>新增食物</div><div style = 'padding-bottom:5px'></div>\n";
 	}
 	echo "<table border = '1' cellpadding = '4' cellspacing = '1' width = '80%' style = 'border-collapse:collapse' bordercolor = '#AAAAAA'>\n";
-	echo "<form action = '" . ROOT_URL . "/admin/admin.php?op=" . $op . "&action=" . $action . "&id=" . $_GET['id'] . "&back=" . $_GET['back'] . "' id = 'foodform' name = 'foodform' method = 'post' enctype = 'multipart/form-data'>\n";
+	echo "<form action = '" . ROOT_URL . "/adminlte/index.php?op=" . $op . "&action=" . $action . "&id=" . $_GET['id'] . "&back=" . $_GET['back'] . "' id = 'foodform' name = 'foodform' method = 'post' enctype = 'multipart/form-data'>\n";
 	echo "<tr>\n";
 	echo "	<td class = 'text13px' align = 'right' width = '20%'>食物圖片</td>\n";
 	echo "	<td class = 'text13px'>\n";
 	if ($_GET['action'] == 'edit' && trim($row['ch_image']) != '')
 	{
 		echo "	<img src = '" . IMG_URL . "/" . $row['ch_image'] . "' width = '300'>\n";
-		echo "  <br><a href = '" . ROOT_URL . "/admin/admin.php?op=" . $op . "&action=delimg&id=" . $_GET['id'] . "&back=" . $_GET['back'] . "&img=" . base64_encode($row['ch_image']) . "&getback=" . base64_encode(getenv("REQUEST_URI")) . "' onclick = 'return confirm(\"確定要刪除嗎?\")'>刪除圖片</a><br>\n";
+		echo "  <br><a href = '" . ROOT_URL . "/adminlte/index.php?op=" . $op . "&action=delimg&id=" . $_GET['id'] . "&back=" . $_GET['back'] . "&img=" . base64_encode($row['ch_image']) . "&getback=" . base64_encode(getenv("REQUEST_URI")) . "' onclick = 'return confirm(\"確定要刪除嗎?\")'>刪除圖片</a><br>\n";
 	}
 	echo "  <input type = 'file' id = 'upimg' name = 'upimg'></td>\n";
 	echo "</tr>\n";
@@ -358,23 +359,45 @@ if ( $op == 'food' && ( $_GET['action'] == 'edit' || $_GET['action'] == 'add' ) 
 	echo "</form>\n";
 	echo "</table>\n";
 }
-elseif ( $op == 'food' && ( $_GET['action'] == 'seepic') )
+elseif ( $op == 'food' && ( $_GET['action'] == 'seepic') ) //檢視食物頁面 By OH
 {
 	$backurl = base64_decode($_GET['back']);
-	$row = mysql_fetch_array( mysql_query("SELECT * FROM choose_food WHERE ch_id = '" . $_GET['id'] . "'") );
-	
-	echo "<div class = 'title' style = 'width:150px'>食物圖片</div><div style = 'padding-bottom:5px'></div><br>";
-	echo "<div>".$row['ch_name']."</div>";
+	$row = mysql_fetch_array( mysql_query("SELECT * FROM choose_food WHERE ch_id = '" . $_GET['id'] . "'") ); //從資料庫取得資料
+	echo "<div class=\"row\">\n"; 
+	echo "<div class=\"col-md-6\">\n"; //左半邊
+	//食物圖片開始
+	echo "<div class=\"box box-primary\">\n";
+	echo "<div class=\"box-header\">\n"; 
+	echo "<h3 class=\"box-title\">食物圖片 - ".$row[name]."</h3>\n"; 
+	echo "</div>\n"; 
 	if($row['ch_image']!='')
 	{
-		echo "<div><img src = '" . IMG_URL . "/" . $row['ch_image'] . "' width = '300'></div>";
+		echo "<div class='row'>";
+		echo "<div class='col-md-12 col-centered text-center'><img src = '" . IMG_URL . "/" . $row['ch_image'] . "' width = '300'></div>";
+		echo "</div>";
 	}
 	else
 	{
-		echo "<div><table border=1 width=300 height=300><tr><td align=center>N/A</td></tr></table></div>";
+		echo "<div class='row'>";
+		echo "<div class='col-md-12 col-centered text-center'><table border=1 width=300 height=300><tr><td align=center>N/A Picture</td></tr></table></div>";
+		echo "</div>";
 	}
+	echo "</div>\n"; 
+	echo "</div>\n"; 
+	//食物圖片結束 
+	echo "<div class=\"col-md-6 col-sm-12\">\n";
+	echo "<div class=\"box box-warning\">\n"; 
+	echo "<div class=\"box-header\">\n"; 
+	echo "<h3 class=\"box-title\">營養素分布</h3>\n"; 
+	echo "</div>\n"; 
+	echo "<div class=\"box-body chart-responsive\">\n";
+	echo "<div id=\"donut-ch.nutrition\" style=\"position: relative;\"></div>\n";
 	
-	echo "<div><input type = 'button' id = 'back' name = 'back' value = '回上一頁' onclick = 'location.href=\"" . $backurl . "\"'></div>";
+	echo "</div>\n"; 
+	echo "</div>\n"; 
+	echo "<div><input type = 'button' class='btn btn-success pull-right' id = 'back' name = 'back' value = '回上一頁' onclick = 'location.href=\"" . $backurl . "\"'></div>";	
+	echo "</div>\n";
+	echo "</div>\n";
 }
 //============================================================查詢食物==============================================================
 else if ($op == 'food')
@@ -388,67 +411,58 @@ else if ($op == 'food')
 }
 -->
 </style>
-	<?php
-	    echo "<table border = '0' cellpadding = '4' cellspacing = '1' width = '95%' valign = 'top'>\n";
-  	 	echo "<form action = '" . ROOT_URL . "/admin/admin.php?op=food' id = 'searchform' name = 'searchform' method = 'post'>\n";
-	    echo "<tr>\n";
-		if($USER['power'] == '1' ||$USER['power'] == '3')
-		{
-		echo "  <td><div style = 'width:110px'><div class = 'title'>維護食物資料</div></div></td>\n";	
-		}
-   		else
-		{
-		echo "  <td><div style = 'width:110px'><div class = 'title'>檢視食物資料</div></div></td>\n";
-		}
-	  	echo "  <td align = 'right'>\n";
-		echo "<select id = 'type' name = 'type' onChange=Javascript:changelist();>\n";
-		echo "<option selected value=0>請選擇</option>\n";
-		echo "<option value = 'kind'>類別</option>\n";
-		echo "<option value = 'ch_name'>名稱</option>\n";
-		echo "<option value = 'kg'> 重量</option>\n";
-		echo "<option value = 'ch_k'>熱量</option>\n";
-		echo "  </select>\n";
-		echo "<span id=searchlist></span>";
-	    //echo "  <input type = 'text' id = 'keyword' name = 'keyword' style = 'width:100px'>\n";
-   		echo "  <input type = 'hidden' id = 'action' name = 'action' value = 'search'>\n";
-	    echo "  <input type = 'submit' id = 'search' name = 'search' value = '查詢食物'>\n";
-		if($USER['power'] == '1' || $USER['power'] == '3')
-		{
-			echo "  <input type = 'button' id = 'addfood' name = 'addfood' value = '新增食物' onclick = 'location.href=\"admin.php?op=".$op."&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"'></td>\n";
-		}
-	    
- 	    echo "</tr>\n";
-    	echo "</form>\n";
-	    echo "</table>\n";
-		
-		echo "<table border = '1' cellpadding = '2' cellspacing = '1' width = '100%' style = 'border-collapse:collapse' bordercolor = '#FFE375'>";
-		echo "<tr bgcolor = '#EEEEEE'>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>所屬類別</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>名稱</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>重量</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>熱量</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>膽固醇</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>脂肪</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>蛋白質</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>醣類</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>鉀</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>鈉</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>鈣</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>磷</td>";
-		echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>鎂</td>";
-		if($USER['power'] == '1' || $USER['power'] == '3')
-		{
-			echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>修改</td>";
-			echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>刪除</td>";
-		}
-		if($USER['power'] == '2')
-		{
-			echo "<td align = 'center' bgcolor='#FFCC00' class = 'text13px style2'>圖片</td>";
-		}
-		echo "</tr>";
-		
-	
-		
+      <!-- Content Wrapper. Contains page content -->
+        <!-- Main content -->
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-header">
+					<?php
+						if($USER['power'] == '1' || $USER['power'] == '3')
+						{
+						echo "<h3 class='box-title'>維護食物資料</h3>";	
+						echo "<a href='index.php?op=food&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"' class='btn btn-primary pull-right btn-sm RbtnMargin' role='button'>新增食物</a>";
+						}
+						else
+						{
+						echo "<h3 class='box-title'>檢視食物資料</h3>";		
+						} 
+					?>
+				
+                </div><!-- /.box-header -->
+                <div class="box-body">
+				<div class="table-responsive">
+                  <table id="foods" class="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+						<th>所屬類別</th>
+						<th>名稱</th>
+						<th>重量</th>
+						<th>熱量</th>
+						<th>膽固醇</th>
+						<th>脂肪</th>
+						<th class="hidden-xs hidden-sm">蛋白質</th>
+						<th>醣類</th>
+						<th class="hidden-xs hidden-sm">鉀</th>
+						<th class="hidden-xs hidden-sm">鈉</th>
+						<th class="hidden-xs hidden-sm">鈣</th>
+						<th class="hidden-xs hidden-sm">磷</th>
+						<th class="hidden-xs hidden-sm">鎂</th>
+						<?php  if($USER['power'] == '1' || $USER['power'] == '3') 
+						{ ?>
+						<th>修改</th>
+									<th>刪除</th>
+						<?php
+						}
+						else if($USER['power'] == '2')
+						{?>
+						<th>圖片</th>
+						<?php } ?>
+                      </tr>
+                    </thead>
+                    <tbody>
+<?php
 		if($type=='kind')
 		{			
 			if($keyword=='food1'||$keyword=='food2'||$keyword=='food3'||$keyword=='food4'||$keyword=='food5'||$keyword=='food6')
@@ -461,7 +475,6 @@ else if ($op == 'food')
 				$type='ch_kind2';
 				
 			}
-			//$keyword = $kindname;
 		}	
 		
 		if ( $action == 'search' )
@@ -505,7 +518,7 @@ else if ($op == 'food')
     $page = ($_GET['page'])? $_GET['page'] : 0;   //設定目前頁數
     $total_page = ceil($food_total / PAGE_NUM);   //計算總共頁數
     $start_num = (!$_GET['page'])? '0' : $_GET['page'] * PAGE_NUM; //SQL開始筆數
-    $sql = "SELECT * FROM choose_food" . $sqlwhe . " LIMIT " . $start_num . "," . PAGE_NUM;
+    $sql = "SELECT * FROM choose_food";//一次讀完.取消當次讀取筆數限制 . $sqlwhe . " LIMIT " . $start_num . "," . PAGE_NUM;
     $result = mysql_query($sql);
     $i = 0;
 					if($type=='kind')
@@ -520,77 +533,73 @@ else if ($op == 'food')
 				$type='ch_kind2';
 				
 			}
-			//$keyword = $kindname;
 		}	
 		while( $row = mysql_fetch_array($result) )
 	{		
-		$bgcolor = ($i % 2 == 0)? '#FFFFFF' : '#FFEAAA';
 		$kind = ($row['ch_kind2'] == '')? $FOODTYPE[$row['ch_kind']] : $row['ch_kind2'];
-		echo "<tr bgcolor = '" . $bgcolor . "'>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $kind . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_name'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['kg'] . " g</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_k'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_cholesterol'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_fat'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_e'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_carbohydrate'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_potassium'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_sodium'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_calcium'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_phosphorous'] . "</td>\n";
-		echo "	<td align = 'center' class = 'text13px'>" . $row['ch_mg'] . "</td>\n";
+		echo "<tr>";
+		echo "	<td>" . $kind . "</td>\n";
+		echo "	<td>" . $row['ch_name'] . "</td>\n";
+		echo "	<td>" . $row['kg'] . " g</td>\n";
+		echo "	<td>" . $row['ch_k'] . "</td>\n";
+		echo "	<td>" . $row['ch_cholesterol'] . "</td>\n";
+		echo "	<td>" . $row['ch_fat'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_e'] . "</td>\n";
+		echo "	<td>" . $row['ch_carbohydrate'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_potassium'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_sodium'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_calcium'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_phosphorous'] . "</td>\n";
+		echo "	<td class='hidden-xs hidden-sm'>" . $row['ch_mg'] . "</td>\n";
 		if($USER['power'] == '1' || $USER['power'] == '3')
 		{
-			echo "	<td align = 'center' class = 'text13px'><a href = 'admin.php?op=" . $op . "&action=edit&id=" . $row['ch_id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>修改</a></td>\n";
-			echo "	<td align = 'center' class = 'text13px'><a href = 'admin.php?op=" . $op . "&action=delete&id=" . $row['ch_id'] . "&page=" . $page . "&img=" . base64_encode($row['ch_image']) . "' onclick = 'return confirm(\"確定要刪除嗎?\")'>刪除</a></td>\n";
+			echo "	<td><a href = 'index.php?op=" . $op . "&action=edit&id=" . $row['ch_id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'><span class='glyphicon glyphicon-edit'></span></a></td>\n";
+			echo "	<td><a href = 'index.php?op=" . $op . "&action=delete&id=" . $row['ch_id'] . "&page=" . $page . "&img=" . base64_encode($row['ch_image']) . "' onclick = 'return confirm(\"確定要刪除嗎?\")'><span class='glyphicon glyphicon-remove'></span></a></td>\n";
 		}
 		elseif($USER['power'] == '2')
 		{
-			echo "	<td align = 'center' class = 'text13px'><a href = 'admin.php?op=" . $op . "&action=seepic&id=" . $row['ch_id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>檢視</td>\n";
+			echo "	<td><a href = 'index.php?op=" . $op . "&action=seepic&id=" . $row['ch_id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'><span class='glyphicon glyphicon-search'></span></td>\n";
 		}
 		echo "</tr>\n";
 		$i++;
 	}
-	echo "</table>\n";
+	
 	?>
-	<div style = 'padding-top:5px;padding-bottom:5px'>
-	<table border = '0' cellpadding = '0' cellspacing = '0' width = '100%'>
+	</tbody>
+	<tfoot>
 	<tr>
-		<td align = 'center' class = 'text13px'>        
-
-<?PHP
- 	if ( $action == 'search' )
-	{
-		if ( trim($keyword) != '' )
-		{
-			$link = '&action=search&type=' . urlencode($type) . '&keyword=' . urlencode($keyword);
+		<th>所屬類別</th>
+		<th>名稱</th>
+		<th>重量</th>
+		<th>熱量</th>
+		<th>膽固醇</th>
+		<th>脂肪</th>
+		<th class="hidden-xs hidden-sm">蛋白質</th>
+		<th>醣類</th>
+		<th class="hidden-xs hidden-sm">鉀</th>
+		<th class="hidden-xs hidden-sm">鈉</th>
+		<th class="hidden-xs hidden-sm">鈣</th>
+		<th class="hidden-xs hidden-sm">磷</th>
+		<th class="hidden-xs hidden-sm">鎂</th>
+		<?php  if($USER['power'] == '1' || $USER['power'] == '3') 
+		{ ?>
+			<th>修改</th>
+			<th>刪除</th>
+		<?php
 		}
-	}
-	
-	    $page = ($_GET['page'])? $_GET['page'] : 0;   //設定目前頁數
-	    $total_page = ceil($food_total / PAGE_NUM);   //計算總共頁
-		echo "總數:".$food_total."　頁數:".($page+1)."　總頁:".$total_page."<br>";
-	
-		if ( $food_total > PAGE_NUM )   //判斷資料庫中的資料是否大於每頁顯示數量
-    {
-        echo "<a href = '" . ROOT_URL . "/admin/admin.php?op=" . $op . $link . "'>第一頁</a>";
-        if ($page > 0)
-        {
-            $up = $page - 1;
-            echo "<span style = 'padding-left:10px'><a href = '" . ROOT_URL . "/admin/admin.php?op=" . $op . "&page=" . $up . $link . "'>上一頁</a></span>";
-        }
-        if ($page < ($total_page - 1))
-        {
-            $next = $page + 1;
-            echo "<span style = 'padding-left:10px'><a href = '" . ROOT_URL . "/admin/admin.php?op=" . $op . "&page=" . $next . $link . "'>下一頁</a></span>";
-        }
-        echo "<span style = 'padding-left:10px'><a href = '" . ROOT_URL . "/admin/admin.php?op=" . $op . "&page=" . ($total_page - 1) . $link. "'>最後一頁</a></span>";
-    }
-		?>
-		</td>
+		else if($USER['power'] == '2')
+		{?>
+			<th>圖片</th>
+		<?php } ?>
 	</tr>
-	</table>
+                    </tfoot>
+                  </table>
+				  </div>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </section><!-- /.content -->
 <?PHP
 }	
 ?>
@@ -653,13 +662,7 @@ function delfood(fid, k, cholesterol, fat, e, carbohydrate, potassium, sodium, c
 function check_form()
 {
 	var obj = document.foodform;
-	if ( trim(obj.ch_name.value) == '')
-	{
-		alert('請輸入食物名稱!!');
-		obj.ch_name.focus();
-	}else{
-		obj.submit();
-	}
+	obj.submit();
 }
 
 function check_kind()
@@ -703,3 +706,34 @@ function check_kind()
 	}
 //-->
 </script>
+	<script>
+	/*
+	 * Play with this code and it'll update in the panel opposite.
+	 *
+	 * Why not try some of the options above?
+	 */
+	Morris.Donut({
+	  element: 'donut-ch.nutrition',
+	  data: [
+		{label: "熱量", value: <?php echo $row['ch_k'] ?>},
+		{label: "蛋白質", value: <?php echo $row['ch_e'] ?>},
+		{label: "脂肪", value: <?php echo $row['ch_fat'] ?>},
+		{label: "醣類", value: <?php echo $row['ch_carbohydrate'] ?>},
+		{label: "鈉", value: <?php echo $row['ch_sodium'] ?>}
+	  ],
+	  resize: true
+	});
+	</script>
+    <!-- page script -->
+    <script type="text/javascript">
+      $(function () {
+        $('#foods').dataTable({
+          "bPaginate": true,
+          "bLengthChange": true,
+          "bFilter": true,
+          "bSort": true,
+          "bInfo": true,
+          "bAutoWidth": false		  
+        });
+      });
+    </script>
