@@ -77,7 +77,7 @@ while ( $row = mysql_fetch_array($result) )
 	echo "<td class = 'text13px' align = 'center'>" . $row['cholesterol'] . "</td>\n";
 	echo "<td class = 'text13px' align = 'center'>" . $row['ferritin'] . "</td>\n";
 	echo "<td class = 'text13px' align = 'center'>" . $row['triglyceride'] . "</td>\n";
-	echo "<td class = 'text13px' align = 'center'>" . date("Y-m-d" , $row['add_time']) . "</td>\n";
+	echo "<td class = 'text13px' align = 'center'>" . date("Ymd" , $row['add_time']) . "</td>\n";
 	echo "</tr>\n";
 	$i++;
 }
