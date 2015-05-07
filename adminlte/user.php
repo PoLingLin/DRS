@@ -706,7 +706,7 @@ elseif ( $op == 'user' &&  $_GET['action'] == 'view'  )
     }else{
         echo "  <input type = 'hidden' id = 'action' name = 'action' value = 'adddatauser'>\n";
     }
-    echo "  <input type = 'button' id = 'back' name = 'back' value = '回上一頁' onclick = 'location.href=\"" . base64_decode($_GET['back']) . "\"'>\n";    
+    echo "  <input type = 'button' id = 'back' name = 'back'  value = '回上一頁' onclick = 'location.href=\"" . base64_decode($_GET['back']) . "\"'>\n";    
     echo "  </td>\n";
     echo "</tr>\n";
     if ($_GET['action'] == 'edit'||$_GET['action'] == 'view')
@@ -750,31 +750,43 @@ elseif ( $op == 'user' )
     echo "  <input type = 'submit' id = 'search' name = 'search' value = '查詢會員'>\n";
 	if($USER['power'] == '1')
 	 {
-		 echo "  <input type = 'button' id = 'adduser' name = 'adduser' value = '新增會員' onclick = 'location.href=\"index.php?op=" . $op . "&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"'></td>\n";
+		 echo "  <input type = 'button'  id = 'adduser' name = 'adduser' value = '新增會員' onclick = 'location.href=\"index.php?op=" . $op . "&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"'></td>\n";
 	 }
     echo "</tr>\n";
     echo "</form>\n";
     echo "</table>\n";	
- 
-    echo "<table border = '1' cellpadding = '4' cellspacing = '1' width = '95%' valign = 'top' style = 'border-collapse:collapse' bgcolor = '#AAAAAA'>\n";
-    echo "<tr bgcolor = '#EEEEEE'>\n";
-    echo "  <td class = 'text13px' align = 'center'>會員帳號</td>\n";
-    echo "  <td class = 'text13px' align = 'center'>中文姓名</td>\n";
-    echo "  <td class = 'text13px' align = 'center'>英文姓名</td>\n";
-    echo "  <td class = 'text13px' align = 'center'>email</td>\n";
-    echo "  <td class = 'text13px' align = 'center'>電話</td>\n";
+	//TABLE START
+    echo "<div class=\"box\">";
+    echo "<div class=\"box-header\">";
+	if($USER['power'] == '1' || $USER['power'] == '3') //判斷使用者來顯示特定的表頭
+	{
+	echo "<h3 class=\"box-title\">維護個人資料</h3>";
+	echo "<a href=\"index.php?op=" . $op . "&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\" class=\"btn btn-warning pull-right btn-sm RbtnMargin\" role=\"button\">新增會員</a>";}
+	else{
+	echo "<h3 class=\"box-title\">檢視個人資料</h3>";
+	}
+    echo "</div>";
+    echo "<div class=\"box-body\">";
+    echo "<table class=\"table table-bordered\" >";
+    echo "<tr>\n";
+	echo "<th style=\"width: 5px\">UID</th>\n";
+    echo "<th>會員帳號</th>\n";
+    echo "<th>中文姓名</th>\n";
+    echo "<th class=\"hidden-xs hidden-sm\">英文姓名</th>\n";
+    echo "<th class=\"hidden-xs hidden-sm\">email</th>\n";
+    echo "<th class=\"hidden-xs hidden-sm\">電話</th>\n";
     if($USER['power'] == '1')
     {
-    	echo "  <td class = 'text13px' align = 'center'>修改</td>\n";
-   		echo "  <td class = 'text13px' align = 'center'>刪除</td>\n";
+    	echo "  <th>修改</th>\n";
+   		echo "  <th>刪除</th>\n";
     }
 	elseif($USER['power'] == '3')
 	{
-		echo "  <td class = 'text13px' align = 'center'>修改</td>\n";
+		echo "  <th>修改</th>\n";
 	}
     else
     {
-		echo "  <td class = 'text13px' align = 'center'>檢視</td>\n"; 
+		echo "  <th>檢視</th>\n"; 
 
     }    	
     echo "</tr>\n";
@@ -826,35 +838,35 @@ elseif ( $op == 'user' )
     $i = 0;	
     while( $row = mysql_fetch_array($result) )
     {
-		$bgcolor = ($i % 2 == 0)? '#FFFFFF' : '#EEEEEE';
 		if($USER['power'] == '1')
 		{			
-			echo "  <tr bgcolor = '" . $bgcolor . "'>\n";
-        	echo "  <td align = 'center' class = 'text13px'>" . $row['username'] . "</td>\n";
-        	echo "  <td align = 'center' class = 'text13px'>" . $row['c_name'] . "</td>\n";
-        	echo "  <td align = 'center' class = 'text13px'>" . $row['e_name'] . "</td>\n";			
-        	echo "  <td align = 'center' class = 'text13px'>" . $row['email'] . "</td>\n";
-        	echo "  <td align = 'center' class = 'text13px'>" . $row['telphone'] . "</td>\n";
-   			echo "  <td align = 'center' class = 'text13px'><a href = 'index.php?op=" . $op . "&action=edit&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>修改</a></td>\n";
-       		echo "  <td align = 'center' class = 'text13px'><a href = 'index.php?op=" . $op . "&action=delete&id=" . $row['id'] . "' onclick = 'return confirm(\"確定要刪除嗎?\")'>刪除</a></td>\n";
+			echo "  <tr>\n";
+			echo "  <td>" . $row['id'] . "</td>\n";
+        	echo "  <td>" . $row['username'] . "</td>\n";
+        	echo "  <td>" . $row['c_name'] . "</td>\n";
+        	echo "  <td class=\"hidden-xs hidden-sm\">" . $row['e_name'] . "</td>\n";			
+        	echo "  <td class=\"hidden-xs hidden-sm\">" . $row['email'] . "</td>\n";
+        	echo "  <td class=\"hidden-xs hidden-sm\">" . $row['telphone'] . "</td>\n";
+   			echo "  <td><a href = 'index.php?op=" . $op . "&action=edit&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'><span class='glyphicon glyphicon-edit'></span></a></td>\n";
+       		echo "  <td><a href = 'index.php?op=" . $op . "&action=delete&id=" . $row['id'] . "' onclick = 'return confirm(\"確定要刪除嗎?\")'><span class='glyphicon glyphicon-remove'></span></a></td>\n";
 		}
 		else
 		{
 			//if($USER['location']==$row['location'])			
 			{
-        		echo "  <tr bgcolor = '" . $bgcolor . "'>\n";
-     		   	echo "  <td align = 'center' class = 'text13px'>" . $row['username'] . "</td>\n";
-        		echo "  <td align = 'center' class = 'text13px'>" . $row['c_name'] . "</td>\n";
-        		echo "  <td align = 'center' class = 'text13px'>" . $row['e_name'] . "</td>\n";			
-        		echo "  <td align = 'center' class = 'text13px'><a href = 'mailto:" . $row['email'] . "'>" . $row['email'] . "</a></td>\n";
-        		echo "  <td align = 'center' class = 'text13px'>" . $row['telphone'] . "</td>\n";
+        		echo "  <tr>\n";
+     		   	echo "  <td>" . $row['username'] . "</td>\n";
+        		echo "  <td>" . $row['c_name'] . "</td>\n";
+        		echo "  <td>" . $row['e_name'] . "</td>\n";			
+        		echo "  <td><a href = 'mailto:" . $row['email'] . "'>" . $row['email'] . "</a></td>\n";
+        		echo "  <td>" . $row['telphone'] . "</td>\n";
         		if($USER['power'] == '2')
     			{
-					echo "  <td align = 'center' class = 'text13px'><a href = 'index.php?op=" . $op . "&action=view&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>檢視</a></td>\n";  	
+					echo "  <td><a href = 'index.php?op=" . $op . "&action=view&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>檢視</a></td>\n";  	
     			}
 				elseif($USER['power'] == '3')
 				{
-					echo "  <td align = 'center' class = 'text13px'><a href = 'index.php?op=" . $op . "&action=edit&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>修改</a></td>\n";
+					echo "  <td><a href = 'index.php?op=" . $op . "&action=edit&id=" . $row['id'] . "&back=" . base64_encode(getenv("REQUEST_URI")) . "'>修改</a></td>\n";
 				}			
 			}
 		}
@@ -862,6 +874,8 @@ elseif ( $op == 'user' )
         	$i++;
     }
     echo "</table>\n";
+	echo "</div><!-- /.box -->";
+	//TABLE END
     echo "<div style = 'padding-top:5px;padding-bottom:5px'>\n";
     echo "<table border = '0' cellpadding = '0' cellspacing = '0' width = '100%'>\n";
     echo "<tr bgcolor = '#FFFFFF'>\n";

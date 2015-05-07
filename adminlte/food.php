@@ -422,7 +422,7 @@ else if ($op == 'food')
 						if($USER['power'] == '1' || $USER['power'] == '3')
 						{
 						echo "<h3 class='box-title'>維護食物資料</h3>";	
-						echo "<a href='index.php?op=food&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"' class='btn btn-primary pull-right btn-sm RbtnMargin' role='button'>新增食物</a>";
+						echo "<a href='index.php?op=". $op ."&action=add&back=" . base64_encode(getenv("REQUEST_URI")) . "\"' class='btn btn-primary pull-right btn-sm RbtnMargin' role='button'>新增食物</a>";
 						}
 						else
 						{
@@ -731,7 +731,7 @@ function check_kind()
           "bPaginate": true,
           "bLengthChange": true,
           "bFilter": true,
-          "bSort": true,
+          "bSort": false,
           "bInfo": true,
           "bAutoWidth": false		  
         });

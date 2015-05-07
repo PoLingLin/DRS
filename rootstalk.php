@@ -277,6 +277,7 @@ function MM_goToURL() { //v3.0
 			<tr>
 				<td>
 				<div style = 'padding-left:35px'>
+				<!-- 食物列表 -->
 				<table border = '0' cellpadding = '0' cellspacing = '2' width = '90%' style = 'border-collapse'>
 				<tr>
 				<?PHP
@@ -343,6 +344,7 @@ function MM_goToURL() { //v3.0
 				}
 				?>
 				</table>
+				<!-- 食物列表 -->
 				</div>
 				</td>
 			</tr>
